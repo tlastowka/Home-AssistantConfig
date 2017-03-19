@@ -1,0 +1,149 @@
+homeassistant:
+  name: Home
+  latitude: 39.9597
+  longitude: -75.1968
+  elevation: 28
+  unit_system: imperial
+  time_zone: America/New_York
+  customize:
+    sensor.yr_symbol:
+      friendly_name: Weather
+    sensor.frontdoor_alarm_type_5_0:
+      hidden: true
+    sensor.frontdoor_burglar_5_10:
+      hidden: true
+    sensor.frontdoor_sourcenodeid_5_2:
+      hidden: true
+    sensor.frontdoor_alarm_level_5_1:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_sourcenodeid_2_2:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_sourcenodeid_3_2:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_burglar_2_10:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_burglar_3_10:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_alarm_level_2_1:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_alarm_level_3_1:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_sensor_2_0:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_sensor_3_0:
+      hidden: true
+    binary_sensor.linear_unknown_type2001_id0102_sensor_2_0:
+      hidden: true
+    binary_sensor.linear_unknown_type2001_id0102_sensor_3_0:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_alarm_type_2_0:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_alarm_type_3_0:
+      hidden: true
+    binary_sensor.ingersoll_rand_dwzwave1_sensor_5_0:
+      friendly_name: Front Door
+      device_class: safety
+    sensor.ingersoll_rand_dwzwave1_alarm_level_5_1:
+      hidden: true
+    sensor.ingersoll_rand_dwzwave1_alarm_type_5_0:
+      hidden: true
+    sensor.ingersoll_rand_dwzwave1_burglar_5_10:
+      hidden: true
+    sensor.ingersoll_rand_dwzwave1_sourcenodeid_5_2:
+      hidden: true
+    sensor.ingersoll_rand_dwzwave1_battery_level_5_0:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_battery_level_2_0:
+      hidden: true
+    sensor.linear_unknown_type2001_id0102_battery_level_3_0:
+      hidden: true
+      
+      
+  customize_domain: {}
+  customize_glob: {}
+introduction: null
+frontend: null
+http: null
+updater: null
+discovery: null
+conversation: null
+history: null
+logbook: null
+sun: null
+sensor:
+  - platform: yr
+  - platform: mqtt
+    name: Basement Temperature
+    state_topic: /house/basement/temp
+  - platform: mqtt
+    name: Kitchen Temperature
+    state_topic: /house/kitchen/temp
+    
+binary_sensor:
+  - platform: template
+    sensors:
+      template_kitchen_door:
+        value_template: "{{ states.sensor.linear_unknown_type2001_id0102_alarm_level_2_1.state|float > 250 }}"
+        friendly_name: Kitchen Door
+        device_class: safety
+        
+
+  - platform: template
+    sensors:
+      template_garage:
+        value_template: "{{ states.sensor.linear_unknown_type2001_id0102_alarm_level_3_1.state|float > 250 }}"
+        friendly_name: Inside Garage Door
+        device_class: safety
+        
+  
+  - platform: hikvision
+    host: 172.16.100.130
+    port: 80
+    ssl: False
+    username: hass
+    password: !secret password_hikvision
+    
+
+tts:
+  platform: google
+mqtt:
+  broker: 127.0.0.1
+  port: 1883
+  client_id: home-assistant-1
+  keepalive: 60
+  username: ha1
+  password: !secret password_mqtt
+  birth_message:
+    topic: hass/status
+    payload: online
+    qos: 1
+    retain: true
+  will_message:
+    topic: hass/status
+    payload: offline
+    qos: 1
+    retain: true
+    
+device_tracker:
+  platform: unifi
+  username: hass
+  password: !secret password_unifi
+  host: 172.16.100.101
+  verify_ssl: false
+
+
+
+config:
+
+group: !include groups.yaml
+
+zwave:
+  device_config: !include zwave_device_config.yaml
+  usb_path: /dev/ttyACM0
+  
+logger:
+  default: info
+  
+recorder:
+  purge_days: 60
+  db_url: !secret db_url

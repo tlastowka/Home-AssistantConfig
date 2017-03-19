@@ -1,0 +1,31 @@
+
+secondary:
+  view: yes
+  entities:
+      - group.awesome_people
+      - group.climate
+      - group.security
+
+climate:
+  name: Climate
+  view: no
+  entities:
+    - sensor.basement_temperature
+    - sensor.kitchen_temperature
+
+awesome_people:
+  name: Awesome People
+  view: no
+  entities:
+    - device_tracker.tonys_nexus
+    - device_tracker.charissas_iphone
+    
+security:
+  name: Security
+  view: no
+  entities:
+    - binary_sensor.ingersoll_rand_dwzwave1_sensor_5_0
+    - binary_sensor.template_kitchen_door
+    - binary_sensor.template_garage
+  
+    
